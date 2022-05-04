@@ -7,6 +7,7 @@ output:
 
 
 ## Loading and preprocessing the data
+Load and unzip data with `read.csv()` and `unz()`. Then convert the date column to Date object.
 
 ```r
 activity <- read.csv(unz('activity.zip','activity.csv'))
@@ -15,6 +16,7 @@ activity$date <- as.Date(activity$date)
 
 
 ## What is mean total number of steps taken per day?
+Group by date and summarize to calculate the number of steps per day. Then calculate the mean and median of the daily steps.
 
 ```r
 library(dplyr)
@@ -44,7 +46,7 @@ daily_mean <- mean(daily$daily_steps)
 daily_median <- median(daily$daily_steps)
 ```
 
-
+Plot a histogram of the daily steps.
 
 ```r
 library(ggplot2)
@@ -59,6 +61,7 @@ The mean of the total number of steps taken per day is 10766.1886792453 and the 
 
 
 ## What is the average daily activity pattern?
+Calculate the mean steps for every 5-minute interval throughtout the time period then plot the daily pattern.
 
 ```r
 avdaily <- summarize(group_by(activity,interval), mean_steps = mean(steps, na.rm= TRUE))
@@ -133,11 +136,11 @@ The mean of the total number of steps taken per day after imputing missing value
 
 
 ```r
-diff_mean <- 100*(dailyimp_mean-daily_mean)/daily_mean
-diff_median <- 100*(dailyimp_median-daily_median)/daily_median
+diff_mean <- 100*(daily_mean-dailyimp_mean)/daily_mean
+diff_median <- 100*(daily_median-dailyimp_median)/daily_median
 ```
 
-The imputing has increased the daily mean number of steps by -0.0051024% and the median by -0.0278681%.
+The imputing has not changed the mean and median significantly. Imputing has decreased the daily mean number of steps by 0.0051024% and the median by 0.0278681%.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -169,4 +172,4 @@ ggplot(avdaily_imp, aes(x=interval, y=mean_steps)) +
 
 ![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
-```
+The daily patterns between weekend and weekdays differ in many ways. The early day peak at between 800-950 mins is less pronounced on the weekend and there is also less activity before this peak. Throughout the day, activity levels are higher for the weekend then for the weekday and the active period is longer: the number of steps doesn't near zero until 2250 minutes for the weekend but during the weekdays it nears zero closer to 2000 minutes. 
